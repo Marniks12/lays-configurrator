@@ -1,3 +1,29 @@
+// ======================
+// AUTH GUARD
+// ======================
+
+const token = localStorage.getItem("token");
+
+if (!token) {
+  // alles verbergen
+  document.body.innerHTML = `
+    <div style="
+      height:100vh;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      font-family:sans-serif;
+    ">
+      <h1>Please log in</h1>
+      <p>You must be logged in to create a bag.</p>
+    </div>
+  `;
+  throw new Error("Not logged in");
+}
+
+
+
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
@@ -24,15 +50,23 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   100
 );
-camera.position.set(0, 1.2, 3);
+camera.position.set(0, 0.9, 2.2);
+camera.lookAt(0, 0.8, 0);
+
 
 /* ======================
    RENDERER
 ====================== */
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  preserveDrawingBuffer: true
+});
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
-document.body.appendChild(renderer.domElement);
+const viewer = document.querySelector(".viewer");
+viewer.appendChild(renderer.domElement);
+
 
 /* ======================
    LIGHTS
@@ -57,6 +91,9 @@ const loader = new GLTFLoader();
 loader.load("/models/chips_arthur_de_klerck.glb", (gltf) => {
   bag = gltf.scene;
   scene.add(bag);
+  bag.position.set(0, 0, 0);
+bag.scale.set(1.1, 1.1, 1.1);
+
 
   bag.traverse((child) => {
     if (child.isMesh) {
@@ -181,23 +218,61 @@ function makeSmallScreenshot() {
 ====================== */
 document.getElementById("saveDesign").addEventListener("click", async () => {
   const token = localStorage.getItem("token");
-  if (!token) return alert("Not logged in");
+  if (!token) {
+    alert("You are not logged in");
+    return;
+  }
 
+  // 👉 forceer 1 render vóór screenshot
+  renderer.render(scene, camera);
+
+  // 👉 kleine preview maken
   const previewImage = makeSmallScreenshot();
 
-  await fetch("http://localhost:3000/api/v1/design", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify({
-      bagColor: currentBagColor,
-      pattern: currentPattern,
-      chipsType: currentChipsType,
-      previewImage
-    }),
-  });
+  try {
+    const res = await fetch("http://localhost:3000/api/v1/design", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        bagColor: currentBagColor,
+        pattern: currentPattern,
+        chipsType: currentChipsType,
+        previewImage,
+      }),
+    });
 
-  alert("Design saved!");
+    if (!res.ok) throw new Error("Save failed");
+
+    alert("Design saved!");
+  } catch (err) {
+    console.error(err);
+    alert("Save failed");
+  }
 });
+const loginBtn = document.getElementById("loginBtn");
+
+loginBtn.addEventListener("click", async () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch("http://localhost:3000/api/v1/user/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!res.ok) throw new Error("Login failed");
+
+    const { token } = await res.json();
+    localStorage.setItem("token", token);
+
+    document.getElementById("loginStatus").innerText = "✅ Logged in";
+  } catch (err) {
+    document.getElementById("loginStatus").innerText = "❌ Login failed";
+  }
+});
+

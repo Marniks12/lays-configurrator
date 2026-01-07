@@ -1,34 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lays Configurator</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
 <body>
-  <input type="color" id="bagColor" value="#d9d9d9" />
 
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <img src="/lays-logo.png" class="logo" alt="Lays logo" />
 
-  <select id="chipsSelect">
-  <option value="">Select chips type</option>
-  <option value="plain">Plain</option>
-  <option value="ribbed">Ribbed</option>
-  <option value="thick">Thick</option>
-</select>
+    <div id="loginBox" class="login-box">
+      <input id="email" placeholder="Email" />
+      <input id="password" type="password" placeholder="Password" />
+      <button id="loginBtn" class="primary small">Login</button>
+      <span id="loginStatus"></span>
+    </div>
+  </header>
 
-  <select id="designSelect">
-  <option value="">Select design</option>
-  <option value="circles">Circles</option>
-  <option value="squares">Squares</option>
-  <option value="spiral">Spiral</option>
-</select>
+  <!-- MAIN LAYOUT -->
+  <div class="layout">
 
-  <select id="bagSelect">
-  <option value="classic">Classic</option>
-  <option value="bbq">BBQ</option>
-  <option value="paprika">Paprika</option>
-</select>
+    <!-- SIDEBAR CONTROLS -->
+    <aside class="controls">
+      <h2>Create your bag</h2>
 
+      <label>Bag color</label>
+      <input type="color" id="bagColor" value="#d9d9d9" />
 
+      <label>Chips type</label>
+      <select id="chipsSelect">
+        <option value="">Select chips type</option>
+        <option value="plain">Plain</option>
+        <option value="ribbed">Ribbed</option>
+        <option value="thick">Thick</option>
+      </select>
 
+      <label>Design</label>
+      <select id="designSelect">
+        <option value="">Select design</option>
+        <option value="circles">Circles</option>
+        <option value="squares">Squares</option>
+        <option value="spiral">Spiral</option>
+      </select>
 
-  <select id="bagSelect">
-    <option value="">Select a bag</option>
-  </select>
-<button id="saveDesign">Save design</button>
+      <label>Bag type</label>
+      <select id="bagSelect">
+        <option value="classic">Classic</option>
+        <option value="bbq">BBQ</option>
+        <option value="paprika">Paprika</option>
+      </select>
 
+      <button id="saveDesign" class="primary">
+        Save design
+      </button>
+    </aside>
+
+    <!-- THREEJS VIEW -->
+    <main class="viewer"></main>
+
+  </div>
+
+  <!-- THREEJS -->
   <script type="module" src="/src/main.js"></script>
 </body>
+</html>
+
