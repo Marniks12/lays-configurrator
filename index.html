@@ -9,14 +9,9 @@
 
   <!-- TOP BAR -->
   <header class="topbar">
-    <img src="/lays-logo.png" class="logo" alt="Lays logo" />
+    <img src="./public/models/ar-lays-big-change-ar-lays-4x3-d080a2f7f0aa45bbab0fccd2078b7152.jpg" class="logo" alt="Lays logo" />
 
-    <div id="loginBox" class="login-box">
-      <input id="email" placeholder="Email" />
-      <input id="password" type="password" placeholder="Password" />
-      <button id="loginBtn" class="primary small">Login</button>
-      <span id="loginStatus"></span>
-    </div>
+    
   </header>
 
   <!-- MAIN LAYOUT -->
@@ -26,8 +21,22 @@
     <aside class="controls">
       <h2>Create your bag</h2>
 
+
       <label>Bag color</label>
       <input type="color" id="bagColor" value="#d9d9d9" />
+<label>Text on bag</label>
+<input id="bagText" type="text" placeholder="Your text here" />
+
+<label>Font</label>
+<select id="fontSelect">
+  <option value="bold 80px Arial">Bold</option>
+  <option value="italic 80px Arial">Italic</option>
+  <option value="80px Arial">Regular</option>
+  <option value="bold 80px Comic Sans MS">Comic</option>
+</select>
+
+<label>Upload image</label>
+<input id="imageUpload" type="file" accept="image/*" />
 
       <label>Chips type</label>
       <select id="chipsSelect">
